@@ -2,61 +2,57 @@ import { useState, useEffect } from "react";
 
 export default function QuizMode({ flashcards }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [score, setScore] = useState(0);
-  const [shuffledFlashcards, setShuffledFlashcards] = useState([]);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(10); // Timer starts from 10 seconds
 
   useEffect(() => {
-    // Filter flashcards that have MCQ options and shuffle them
-    const mcqFlashcards = flashcards.filter(fc => fc.options && fc.options.length > 0);
-    setShuffledFlashcards([...mcqFlashcards].sort(() => Math.random() - 0.5));
-  }, [flashcards]);
-
-  const handleAnswer = (option) => {
-    if (option === shuffledFlashcards[currentIndex].answer) {
-      setScore(score + 1);
+    if (timeLeft === 0) {
+      nextQuestion();
+      return;
     }
-    setSelectedAnswer(option);
 
-    setTimeout(() => {
-      setSelectedAnswer(null);
-      if (currentIndex + 1 < shuffledFlashcards.length) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        alert(`🎉 Quiz Completed! Your Score: ${score + 1}/${shuffledFlashcards.length}`);
-        setCurrentIndex(0);
-        setScore(0);
-      }
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const nextQuestion = () => {
+    setShowAnswer(false);
+    setTimeLeft(10); // Reset timer for next question
+    setCurrentIndex((prev) => (prev + 1) % flashcards.length);
   };
 
-  if (shuffledFlashcards.length === 0) {
-    return <p className="text-center text-gray-500">No multiple-choice flashcards available.</p>;
-  }
-
-  const { question, options } = shuffledFlashcards[currentIndex];
-
   return (
-    <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-5">
-      <h2 className="text-xl font-bold mb-4">Quiz Mode 📝</h2>
-      <p className="text-lg font-semibold mb-3">{question}</p>
+    <div className="flex flex-col items-center">
+      {flashcards.length > 0 ? (
+        <div className="bg-white shadow-lg rounded-lg p-6 w-96 text-center relative">
+          <h2 className="text-lg font-bold mb-4">{flashcards[currentIndex].question}</h2>
 
-      <div className="grid gap-3">
-        {options.map((option, idx) => (
-          <button
-            key={idx}
-            className={`btn w-full ${selectedAnswer === option 
-              ? (option === shuffledFlashcards[currentIndex].answer ? "btn-success" : "btn-error") 
-              : "btn-outline"}`}
-            onClick={() => handleAnswer(option)}
-            disabled={selectedAnswer !== null}
-          >
-            {option}
+          {showAnswer ? (
+            <p className="text-green-600 font-semibold">{flashcards[currentIndex].answer}</p>
+          ) : (
+            <p className="text-gray-400 italic">Tap to reveal the answer</p>
+          )}
+
+          <button className="btn btn-accent mt-4" onClick={() => setShowAnswer(!showAnswer)}>
+            {showAnswer ? "Hide Answer" : "Show Answer"}
           </button>
-        ))}
-      </div>
 
-      <p className="mt-4 text-gray-600">Score: {score}/{shuffledFlashcards.length}</p>
+          {/* Timer UI */}
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Time Left: {timeLeft}s</p>
+            <progress className="progress progress-primary w-full" value={timeLeft} max="10"></progress>
+          </div>
+
+          <button className="btn btn-primary mt-4" onClick={nextQuestion}>
+            Skip ➡️
+          </button>
+        </div>
+      ) : (
+        <p className="text-center text-gray-500">No flashcards available!</p>
+      )}
     </div>
   );
 }
