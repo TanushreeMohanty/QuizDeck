@@ -1,18 +1,32 @@
+import { useState } from "react";
+import FlashcardForm from "./components/FlashcardForm";
+import FlashcardList from "./components/FlashcardList";
 
-function App() {
+export default function App() {
+  const [flashcards, setFlashcards] = useState([]);
+  const [editingFlashcard, setEditingFlashcard] = useState(null);
+
+  const addOrUpdateFlashcard = (newFlashcard) => {
+    setFlashcards((prev) =>
+      prev.some((fc) => fc.id === newFlashcard.id)
+        ? prev.map((fc) => (fc.id === newFlashcard.id ? newFlashcard : fc))
+        : [...prev, newFlashcard]
+    );
+  };
+
+  const deleteFlashcard = (id) => {
+    setFlashcards(flashcards.filter((flashcard) => flashcard.id !== id));
+  };
+
+  const editFlashcard = (flashcard) => {
+    setEditingFlashcard(flashcard);
+  };
 
   return (
-    <>
-    <button className="btn btn-dash">Default</button>
-<button className="btn btn-dash btn-primary">Primary</button>
-<button className="btn btn-dash btn-secondary">Secondary</button>
-<button className="btn btn-dash btn-accent">Accent</button>
-<button className="btn btn-dash btn-info">Info</button>
-<button className="btn btn-dash btn-success">Success</button>
-<button className="btn btn-dash btn-warning">Warning</button>
-<button className="btn btn-dash btn-error">Error</button>
-    </>
-  )
+    <div className="container mx-auto p-5">
+      <h1 className="text-3xl font-bold text-center text-blue-600">Flashcard Quiz 🚀</h1>
+      <FlashcardForm onSave={addOrUpdateFlashcard} editingFlashcard={editingFlashcard} setEditingFlashcard={setEditingFlashcard} />
+      <FlashcardList flashcards={flashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
+    </div>
+  );
 }
-
-export default App
