@@ -3,14 +3,16 @@ import { useState } from "react";
 export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlashcard }) {
   const [question, setQuestion] = useState(editingFlashcard?.question || "");
   const [answer, setAnswer] = useState(editingFlashcard?.answer || "");
+  const [category, setCategory] = useState(editingFlashcard?.category || "General");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!question || !answer) return;
     
-    onSave({ id: editingFlashcard?.id || Date.now(), question, answer });
+    onSave({ id: editingFlashcard?.id || Date.now(), question, answer, category });
     setQuestion("");
     setAnswer("");
+    setCategory("General");
     setEditingFlashcard(null);
   };
 
@@ -33,6 +35,20 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
       />
+      
+      {/* Category Selection */}
+      <select
+        className="select select-bordered w-full my-2"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+      >
+        <option value="General">General</option>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="History">History</option>
+        <option value="Language">Language</option>
+      </select>
+
       <button type="submit" className="btn btn-primary w-full">
         {editingFlashcard ? "Update" : "Add"}
       </button>

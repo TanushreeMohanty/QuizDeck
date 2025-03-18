@@ -5,9 +5,10 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
 
   return (
     <div
-      className="card bg-white shadow-lg p-5 rounded-lg cursor-pointer w-60 "
+      className="card bg-white shadow-lg p-5 rounded-lg cursor-pointer w-60 border-l-4 border-blue-500"
       onClick={() => setFlipped(!flipped)}
     >
+      <p className="text-xs text-gray-500 mb-1">{flashcard.category}</p>
       <h3 className="text-lg font-semibold text-center text-black">
         {flipped ? flashcard.answer : flashcard.question}
       </h3>
