@@ -16,6 +16,7 @@ export default function App() {
         : [...prev, newFlashcard]
     );
   };
+  
 
   const deleteFlashcard = (id) => {
     setFlashcards(flashcards.filter((flashcard) => flashcard.id !== id));

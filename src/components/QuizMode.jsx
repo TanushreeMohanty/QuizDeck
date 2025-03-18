@@ -1,58 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function QuizMode({ flashcards }) {
-  const [index, setIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
+  const [shuffledFlashcards, setShuffledFlashcards] = useState([]);
 
-  const handleNext = () => {
-    setFlipped(false);
-    if (index < flashcards.length - 1) {
-      setIndex(index + 1);
-    } else {
-      alert(`Quiz Completed! Your Score: ${score}/${flashcards.length}`);
-      setIndex(0);
-      setScore(0);
+  useEffect(() => {
+    // Filter flashcards that have MCQ options and shuffle them
+    const mcqFlashcards = flashcards.filter(fc => fc.options && fc.options.length > 0);
+    setShuffledFlashcards([...mcqFlashcards].sort(() => Math.random() - 0.5));
+  }, [flashcards]);
+
+  const handleAnswer = (option) => {
+    if (option === shuffledFlashcards[currentIndex].answer) {
+      setScore(score + 1);
     }
+    setSelectedAnswer(option);
+
+    setTimeout(() => {
+      setSelectedAnswer(null);
+      if (currentIndex + 1 < shuffledFlashcards.length) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        alert(`🎉 Quiz Completed! Your Score: ${score + 1}/${shuffledFlashcards.length}`);
+        setCurrentIndex(0);
+        setScore(0);
+      }
+    }, 1000);
   };
 
-  const handleCorrect = () => {
-    setScore(score + 1);
-    handleNext();
-  };
+  if (shuffledFlashcards.length === 0) {
+    return <p className="text-center text-gray-500">No multiple-choice flashcards available.</p>;
+  }
+
+  const { question, options } = shuffledFlashcards[currentIndex];
 
   return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-xl font-semibold mb-4">Quiz Mode</h2>
-      <p className="text-gray-600">Progress: {index + 1} / {flashcards.length}</p>
+    <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-5">
+      <h2 className="text-xl font-bold mb-4">Quiz Mode 📝</h2>
+      <p className="text-lg font-semibold mb-3">{question}</p>
 
-      {/* Flashcard Display */}
-      <div
-        className="relative w-60 h-40 perspective-1000 cursor-pointer my-4"
-        onClick={() => setFlipped(!flipped)}
-      >
-        <div className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${flipped ? "rotate-y-180" : ""}`}>
-          {/* Front Side (Question) */}
-          <div className="absolute w-full h-full bg-blue-500 text-white flex items-center justify-center p-4 rounded-lg shadow-lg backface-hidden">
-            <h3 className="text-lg font-semibold text-center">{flashcards[index].question}</h3>
-          </div>
-
-          {/* Back Side (Answer) */}
-          <div className="absolute w-full h-full bg-green-500 text-white flex items-center justify-center p-4 rounded-lg shadow-lg rotate-y-180 backface-hidden">
-            <h3 className="text-lg font-semibold text-center">{flashcards[index].answer}</h3>
-          </div>
-        </div>
+      <div className="grid gap-3">
+        {options.map((option, idx) => (
+          <button
+            key={idx}
+            className={`btn w-full ${selectedAnswer === option 
+              ? (option === shuffledFlashcards[currentIndex].answer ? "btn-success" : "btn-error") 
+              : "btn-outline"}`}
+            onClick={() => handleAnswer(option)}
+            disabled={selectedAnswer !== null}
+          >
+            {option}
+          </button>
+        ))}
       </div>
 
-      {/* Controls */}
-      <div className="flex gap-4 mt-3">
-        <button className="btn btn-success" onClick={handleCorrect}>
-          ✅ Correct
-        </button>
-        <button className="btn btn-error" onClick={handleNext}>
-          ❌ Skip
-        </button>
-      </div>
+      <p className="mt-4 text-gray-600">Score: {score}/{shuffledFlashcards.length}</p>
     </div>
   );
 }
