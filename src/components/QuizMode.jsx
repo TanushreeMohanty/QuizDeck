@@ -56,7 +56,7 @@ export default function QuizMode({ flashcards }) {
           )}
 
           <button className="btn btn-accent mt-4" onClick={() => setShowAnswer(!showAnswer)}>
-            {showAnsswer ? "Hide Answer" : "Show Answer"}
+            {showAnswer ? "Hide Answer" : "Show Answer"}
           </button>
 
           {/* Timer UI */}

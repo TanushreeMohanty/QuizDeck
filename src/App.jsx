@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FlashcardForm from "./components/FlashcardForm";
 import FlashcardList from "./components/FlashcardList";
 import QuizMode from "./components/QuizMode";
@@ -8,6 +8,14 @@ export default function App() {
   const [editingFlashcard, setEditingFlashcard] = useState(null);
   const [quizMode, setQuizMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const addOrUpdateFlashcard = (newFlashcard) => {
     setFlashcards((prev) =>
@@ -16,7 +24,6 @@ export default function App() {
         : [...prev, newFlashcard]
     );
   };
-  
 
   const deleteFlashcard = (id) => {
     setFlashcards(flashcards.filter((flashcard) => flashcard.id !== id));
@@ -29,21 +36,44 @@ export default function App() {
   const categories = ["All", ...new Set(flashcards.map((fc) => fc.category))];
 
   return (
-    <div className="container mx-auto p-5">
-      <h1 className="text-3xl font-bold text-center text-blue-600">Flashcard Quiz 🚀</h1>
+    <div
+      className={`min-h-screen p-5 transition-all duration-300 ${
+        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      }`}
+    >
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-4xl font-bold text-blue-700 dark:text-blue-400">
+          Flashcard Quiz 🚀
+        </h1>
+
+        {/* Dark Mode Toggle */}
+        <button
+          className="px-4 py-2 border rounded-lg transition-all duration-300 
+          hover:bg-gray-200 dark:hover:bg-gray-800"
+          onClick={() => setDarkMode(!darkMode)}
+        >
+          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </div>
 
       {/* Toggle Study & Quiz Mode */}
-      <div className="flex justify-center mb-4">
-        <button className="btn btn-primary" onClick={() => setQuizMode(!quizMode)}>
+      <div className="flex justify-center mb-6">
+        <button
+          className="px-5 py-2 font-semibold rounded-lg shadow-md transition-all duration-300
+          bg-blue-600 text-white hover:bg-blue-700"
+          onClick={() => setQuizMode(!quizMode)}
+        >
           {quizMode ? "📚 Study Mode" : "📝 Quiz Mode"}
         </button>
       </div>
 
-      {/* Category Selection */}
+      {/* Category Selection (Only in Study Mode) */}
       {!quizMode && (
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <select
-            className="select select-bordered w-52"
+            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
+            bg-white dark:bg-gray-800 text-black dark:text-white"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -56,14 +86,22 @@ export default function App() {
         </div>
       )}
 
-      {/* Conditionally Render Study Mode or Quiz Mode */}
+      {/* Conditional Rendering: Study Mode or Quiz Mode */}
       {quizMode ? (
         <QuizMode flashcards={flashcards} />
       ) : (
         <>
-          <FlashcardForm onSave={addOrUpdateFlashcard} editingFlashcard={editingFlashcard} setEditingFlashcard={setEditingFlashcard} />
+          <FlashcardForm
+            onSave={addOrUpdateFlashcard}
+            editingFlashcard={editingFlashcard}
+            setEditingFlashcard={setEditingFlashcard}
+          />
           <FlashcardList
-            flashcards={selectedCategory === "All" ? flashcards : flashcards.filter((fc) => fc.category === selectedCategory)}
+            flashcards={
+              selectedCategory === "All"
+                ? flashcards
+                : flashcards.filter((fc) => fc.category === selectedCategory)
+            }
             onEdit={editFlashcard}
             onDelete={deleteFlashcard}
           />
