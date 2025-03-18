@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 export default function QuizMode({ flashcards }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(10); // Timer starts from 10 seconds
+  const [timeLeft, setTimeLeft] = useState(10);
+  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [totalAnswered, setTotalAnswered] = useState(0);
 
   useEffect(() => {
     if (timeLeft === 0) {
-      nextQuestion();
+      handleAnswer(false); // Auto-mark incorrect if time runs out
       return;
     }
 
@@ -18,11 +22,26 @@ export default function QuizMode({ flashcards }) {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
+  const handleAnswer = (isCorrect) => {
+    setTotalAnswered((prev) => prev + 1);
+    
+    if (isCorrect) {
+      setScore((prev) => prev + 10); // Each correct answer = +10 points
+      setCorrectCount((prev) => prev + 1);
+    } else {
+      setIncorrectCount((prev) => prev + 1);
+    }
+
+    nextQuestion();
+  };
+
   const nextQuestion = () => {
     setShowAnswer(false);
-    setTimeLeft(10); // Reset timer for next question
+    setTimeLeft(10);
     setCurrentIndex((prev) => (prev + 1) % flashcards.length);
   };
+
+  const accuracy = totalAnswered > 0 ? ((correctCount / totalAnswered) * 100).toFixed(2) : 0;
 
   return (
     <div className="flex flex-col items-center">
@@ -37,7 +56,7 @@ export default function QuizMode({ flashcards }) {
           )}
 
           <button className="btn btn-accent mt-4" onClick={() => setShowAnswer(!showAnswer)}>
-            {showAnswer ? "Hide Answer" : "Show Answer"}
+            {showAnsswer ? "Hide Answer" : "Show Answer"}
           </button>
 
           {/* Timer UI */}
@@ -46,9 +65,20 @@ export default function QuizMode({ flashcards }) {
             <progress className="progress progress-primary w-full" value={timeLeft} max="10"></progress>
           </div>
 
-          <button className="btn btn-primary mt-4" onClick={nextQuestion}>
-            Skip ➡️
-          </button>
+          {/* Answer Buttons */}
+          <div className="mt-4 flex gap-4 justify-center">
+            <button className="btn btn-success" onClick={() => handleAnswer(true)}>✅ Correct</button>
+            <button className="btn btn-error" onClick={() => handleAnswer(false)}>❌ Incorrect</button>
+          </div>
+
+          {/* Score & Progress */}
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full">
+            <h3 className="font-bold text-lg text-blue-600">📊 Progress</h3>
+            <p>Score: <span className="font-semibold">{score}</span></p>
+            <p>Correct: <span className="text-green-600">{correctCount}</span></p>
+            <p>Incorrect: <span className="text-red-600">{incorrectCount}</span></p>
+            <p>Accuracy: <span className="text-purple-600">{accuracy}%</span></p>
+          </div>
         </div>
       ) : (
         <p className="text-center text-gray-500">No flashcards available!</p>
