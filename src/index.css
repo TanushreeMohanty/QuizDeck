@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* Flashcard */
+
 .perspective-1000 {
   perspective: 1000px;
 }
@@ -15,4 +17,17 @@
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+
+
+/* For Logo:CSS for Floating Animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

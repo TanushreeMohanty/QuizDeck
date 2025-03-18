@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FlashcardForm from "./components/FlashcardForm";
 import FlashcardList from "./components/FlashcardList";
 import QuizMode from "./components/QuizMode";
-
+import logo from "./assets/logo.png";
 export default function App() {
   const [flashcards, setFlashcards] = useState([]);
   const [editingFlashcard, setEditingFlashcard] = useState(null);
@@ -43,9 +43,11 @@ export default function App() {
     >
       {/* Header Section */}
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-4xl font-bold text-blue-700 dark:text-blue-400">
-          Flashcard Quiz 🚀
-        </h1>
+      <h1 className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300">
+        <img src={logo} alt="QuizDeck Logo" className="w-12 h-12 animate-float" />
+        QuizDeck
+      </h1>
+
 
         {/* Dark Mode Toggle */}
         <button
