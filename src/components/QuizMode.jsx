@@ -84,7 +84,7 @@ export default function QuizMode({ flashcards }) {
         </div>
       ) : flashcards.length > 0 ? (
         <div className="bg-white shadow-lg rounded-lg p-6 w-96 text-center relative">
-          <h2 className="text-lg font-bold mb-4">{flashcards[currentIndex].question}</h2>
+          <h2 className="text-lg font-bold mb-4 text-black">{flashcards[currentIndex].question}</h2>
 
           {showAnswer ? (
             <p className="text-green-600 font-semibold">{flashcards[currentIndex].answer}</p>
@@ -104,13 +104,13 @@ export default function QuizMode({ flashcards }) {
 
           {/* Answer Buttons */}
           <div className="mt-4 flex gap-4 justify-center">
-            <button className="btn btn-success" onClick={() => handleAnswer(true)}>✅ Correct</button>
-            <button className="btn btn-error" onClick={() => handleAnswer(false)}>❌ Incorrect</button>
+            <button className="btn btn-success btn-dash" onClick={() => handleAnswer(true)}>✅ Correct</button>
+            <button className="btn btn-error btn-dash" onClick={() => handleAnswer(false)}>❌ Incorrect</button>
           </div>
 
           {/* Score & Progress */}
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full">
-            <h3 className="font-bold text-lg text-blue-600">📊 Progress</h3>
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full text-black">
+            <h3 className="font-bold text-lg text-secondary">📊 Progress</h3>
             <p>Score: <span className="font-semibold">{score}</span></p>
             <p>Correct: <span className="text-green-600">{correctCount}</span></p>
             <p>Incorrect: <span className="text-red-600">{incorrectCount}</span></p>

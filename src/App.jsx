@@ -105,46 +105,61 @@ const importFlashcards = (event) => {
   });
 
   return (
-    <motion.div
-      className={`min-h-screen p-5 transition-all duration-300 ${
-        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+<motion.div
+  className={`min-h-screen p-5 transition-all duration-300 ${
+    darkMode ? "bg-[#121212] text-[#E0E0E0]" : "bg-[#F8F9FA] text-[#333333]"
+  }`}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.6 }}
+>
+  {/* ✅ Header */}
+  <div className="flex flex-wrap justify-between items-center mb-5 gap-4">
+    <motion.h1
+      className={`flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl font-extrabold transition-all duration-300 ${
+        darkMode ? "text-[#FFC107]" : "text-[#FFB400]"
       }`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-5">
-        <motion.h1
-          className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <img src={logo} alt="QuizDeck Logo" className="w-12 h-12 animate-float" />
-          QuizDeck
-        </motion.h1>
+      <img
+        src={logo}
+        alt="QuizDeck Logo"
+        className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 animate-float"
+      />
+      QuizDeck
+    </motion.h1>
 
-        {/* Dark Mode Toggle */}
-        <motion.button
-          className="px-4 py-2 border rounded-lg transition-all duration-300 
-          hover:bg-gray-200 dark:hover:bg-gray-800"
-          onClick={() => setDarkMode(!darkMode)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-        </motion.button>
+    <motion.button
+      className={`btn btn-outline btn-sm sm:btn-md ${
+        darkMode ? "border-white text-white hover:bg-gray-800" : ""
+      }`}
+      onClick={() => setDarkMode(!darkMode)}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+    </motion.button>
+  </div>
+
+  {/* ✅ Main Layout: Grid for Flashcards & Leaderboard */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    {/* ✅ Left Section (Flashcards & Quiz Mode) */}
+    <div className="lg:col-span-2">
+      {/* 🔥 Streak Counter */}
+      <div className={`text-center mb-4 text-sm sm:text-base md:text-lg font-semibold ${
+        darkMode ? "text-[#FF7043]" : "text-[#FF5722]"
+      }`}>
+        🔥 Daily Streak: {streak} days
       </div>
 
-      {/* Streak Counter */}
-      <div className="text-center mb-4 text-lg font-semibold">🔥 Daily Streak: {streak} days</div>
-
-      {/* Toggle Study & Quiz Mode */}
+      {/* 📝 Study/Quiz Mode Toggle */}
       <div className="flex justify-center mb-6">
         <motion.button
-          className="px-5 py-2 font-semibold rounded-lg shadow-md transition-all duration-300
-          bg-blue-600 text-white hover:bg-blue-700"
+          className={`btn w-full sm:w-auto ${
+            darkMode ? "btn-secondary" : "btn-secondary"
+          }`}
           onClick={() => setQuizMode(!quizMode)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -153,28 +168,28 @@ const importFlashcards = (event) => {
         </motion.button>
       </div>
 
-      {/* Filters Section (Only in Study Mode) */}
+      {/* 📂 Filters Section (Only in Study Mode) */}
       {!quizMode && (
         <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-6"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {/* Search Input */}
           <motion.input
             type="text"
             placeholder="🔍 Search flashcards..."
-            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 bg-white dark:bg-gray-800 text-black dark:text-white"
+            className={`input input-bordered w-full ${
+              darkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-600"
+            }`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             whileFocus={{ scale: 1.05 }}
           />
-
-          {/* Category Filter */}
           <motion.select
-            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
-            bg-white dark:bg-gray-800 text-black dark:text-white"
+            className={`select select-bordered w-full ${
+              darkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-600"
+            }`}
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             whileHover={{ scale: 1.05 }}
@@ -185,11 +200,10 @@ const importFlashcards = (event) => {
               </option>
             ))}
           </motion.select>
-
-          {/* Difficulty Filter */}
           <motion.select
-            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
-            bg-white dark:bg-gray-800 text-black dark:text-white"
+            className={`select select-bordered w-full ${
+              darkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-600"
+            }`}
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
             whileHover={{ scale: 1.05 }}
@@ -202,40 +216,65 @@ const importFlashcards = (event) => {
         </motion.div>
       )}
 
-      {/* Conditional Rendering: Study Mode or Quiz Mode */}
+      {/* 🏆 Flashcards/Quiz Mode */}
       {quizMode ? (
         <QuizMode flashcards={flashcards} />
       ) : (
         <>
-        <div className="flex justify-center gap-4 my-4">
-  {/* Import Button */}
-  <label className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer">
-    📥 Import Flashcards
-    <input type="file" className="hidden" onChange={importFlashcards} />
-  </label>
+          {/* 📤 Import/Export Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 my-4">
+            <label
+              className={`btn w-full sm:w-auto cursor-pointer ${
+                darkMode ? "btn-secondary" : "btn-secondary"
+              }`}
+            >
+              📥 Import Flashcards
+              <input type="file" className="hidden" onChange={importFlashcards} />
+            </label>
+            <button
+              onClick={exportFlashcards}
+              className={`btn w-full sm:w-auto ${
+                darkMode ? "btn-secondary" : "btn-secondary"
+              }`}
+            >
+              📤 Export Flashcards
+            </button>
+          </div>
 
-  {/* Export Button */}
-  <button 
-    onClick={exportFlashcards} 
-    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-  >
-    📤 Export Flashcards
-  </button>
-</div>
-
+          {/* 📝 Flashcard Form */}
           <FlashcardForm
             onSave={addOrUpdateFlashcard}
             editingFlashcard={editingFlashcard}
             setEditingFlashcard={setEditingFlashcard}
           />
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <FlashcardList flashcards={filteredFlashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
+
+          {/* 📚 Flashcard List */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <FlashcardList
+              flashcards={filteredFlashcards}
+              onEdit={editFlashcard}
+              onDelete={deleteFlashcard}
+            />
           </motion.div>
         </>
       )}
+    </div>
 
-      {/* Leaderboard */}
+    {/* ✅ Right Section (Leaderboard) */}
+    <div
+      className={`lg:col-span-1 p-4 rounded-lg shadow ${
+        darkMode ? "bg-gray-900 text-white border border-gray-700" : "bg-white text-black "
+      }`}
+    >
       <Leaderboard />
-    </motion.div>
+    </div>
+  </div>
+</motion.div>
+
+
   );
 }

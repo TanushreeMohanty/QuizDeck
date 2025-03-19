@@ -4,7 +4,7 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <div className="w-60">
+    <div className="w-60 p-2 ">
       {/* Flashcard Flip Container */}
       <div
         className="relative w-full h-40 perspective-1000 cursor-pointer"
@@ -14,7 +14,7 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
           className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${flipped ? "rotate-y-180" : ""}`}
         >
           {/* Front Side (Question) */}
-          <div className="absolute w-full h-full bg-blue-500 text-white flex items-center justify-center p-4 rounded-lg shadow-lg backface-hidden">
+          <div className="absolute w-full h-full bg-[#ffb300] text-white flex items-center justify-center p-4 rounded-lg shadow-lg backface-hidden">
             <h3 className="text-lg font-semibold text-center">{flashcard.question}</h3>
           </div>
 
@@ -26,10 +26,10 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
       </div>
 
       {/* Category & Action Buttons (Fixed Layout) */}
-      <p className="text-xs text-gray-500 mt-2 text-center">{flashcard.category}</p>
+      <p className="text-xs text-black mt-2 text-center">{flashcard.category}</p>
       <div className="flex justify-between mt-2">
         <button
-          className="btn btn-sm btn-primary"
+          className="btn btn-sm btn-secondary"
           onClick={(e) => {
             e.stopPropagation();
             onEdit(flashcard);
@@ -38,7 +38,7 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
           Edit
         </button>
         <button
-          className="btn btn-sm btn-error"
+          className="btn btn-sm btn-dash btn-error"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(flashcard.id);

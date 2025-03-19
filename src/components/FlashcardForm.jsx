@@ -24,21 +24,21 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
       <input
         type="text"
         placeholder="Enter question..."
-        className="input input-bordered w-full my-2"
+        className="input input-bordered w-full my-2 text-white"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       />
       <input
         type="text"
         placeholder="Enter answer..."
-        className="input input-bordered w-full my-2"
+        className="input input-bordered w-full my-2 text-white"
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
       />
       
       {/* Category Selection */}
       <select
-        className="select select-bordered w-full my-2"
+        className="select select-bordered w-full my-2 text-white"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       >
@@ -49,7 +49,7 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
         <option value="Language">Language</option>
       </select>
 
-      <button type="submit" className="btn btn-primary w-full">
+      <button type="submit" className="btn btn-success w-full">
         {editingFlashcard ? "Update" : "Add"}
       </button>
     </form>

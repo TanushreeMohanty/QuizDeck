@@ -20,14 +20,14 @@ export default function Leaderboard() {
   
 
   return (
-    <div className="mt-8 p-5 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold text-center mb-4 text-gray-900 dark:text-white">
+    <div className=" p-2 bg-gray-100 dark:bg-secondary rounded-lg shadow-md text-white">
+      <h2 className="text-xl font-semibold text-center mb-4 dark:text-white">
         🏆 Leaderboard
       </h2>
       {leaderboard.length > 0 ? (
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-blue-600 text-white">
+            <tr className="bg-[#ffb300] text-white">
               <th className="py-2 px-4">Rank</th>
               <th className="py-2 px-4">Name</th>
               <th className="py-2 px-4">Score</th>
