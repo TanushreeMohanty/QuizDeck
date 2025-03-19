@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // For animations
 import FlashcardForm from "./components/FlashcardForm";
 import FlashcardList from "./components/FlashcardList";
 import QuizMode from "./components/QuizMode";
+import Leaderboard from "./components/Leaderboard"; // Import Leaderboard
 import logo from "./assets/logo.png";
 
 export default function App() {
-  const [flashcards, setFlashcards] = useState(() => {
-    return JSON.parse(localStorage.getItem("flashcards")) || [];
-  });
-
+  const [flashcards, setFlashcards] = useState(() => JSON.parse(localStorage.getItem("flashcards")) || []);
   const [editingFlashcard, setEditingFlashcard] = useState(null);
   const [quizMode, setQuizMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
 
+  // Streak tracking
+  const [streak, setStreak] = useState(() => JSON.parse(localStorage.getItem("streak")) || 0);
+  const [lastActiveDate, setLastActiveDate] = useState(() => localStorage.getItem("lastActiveDate") || "");
+
   // Dark Mode (Stored in localStorage)
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Save flashcards to localStorage when updated
   useEffect(() => {
@@ -30,6 +30,17 @@ export default function App() {
     document.documentElement.classList.toggle("dark", darkMode);
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
+
+  // Daily Streak Logic
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    if (lastActiveDate && lastActiveDate !== today) {
+      setStreak((prev) => (new Date(lastActiveDate).getTime() === new Date(today).getTime() - 86400000 ? prev + 1 : 1));
+    }
+    setLastActiveDate(today);
+    localStorage.setItem("streak", JSON.stringify(streak));
+    localStorage.setItem("lastActiveDate", today);
+  }, []);
 
   // Add or Update Flashcard
   const addOrUpdateFlashcard = (newFlashcard) => {
@@ -53,7 +64,7 @@ export default function App() {
   // Extract Unique Categories
   const categories = ["All", ...new Set(flashcards.map((fc) => fc.category))];
 
-  // Filter Flashcards Based on Search, Category & Difficulty
+  // Filter Flashcards
   const filteredFlashcards = flashcards.filter((fc) => {
     return (
       fc.question.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -71,7 +82,7 @@ export default function App() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-5">
         <motion.h1
           className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300"
@@ -94,6 +105,9 @@ export default function App() {
           {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
         </motion.button>
       </div>
+
+      {/* Streak Counter */}
+      <div className="text-center mb-4 text-lg font-semibold">🔥 Daily Streak: {streak} days</div>
 
       {/* Toggle Study & Quiz Mode */}
       <div className="flex justify-center mb-6">
@@ -167,15 +181,14 @@ export default function App() {
             editingFlashcard={editingFlashcard}
             setEditingFlashcard={setEditingFlashcard}
           />
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <FlashcardList flashcards={filteredFlashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
           </motion.div>
         </>
       )}
+
+      {/* Leaderboard */}
+      <Leaderboard />
     </motion.div>
   );
 }
