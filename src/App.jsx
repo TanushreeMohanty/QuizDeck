@@ -21,6 +21,37 @@ export default function App() {
   // Dark Mode (Stored in localStorage)
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
+  // Export Flashcards
+const exportFlashcards = () => {
+  const dataStr = JSON.stringify(flashcards, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "flashcards.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+// Import Flashcards
+const importFlashcards = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const importedFlashcards = JSON.parse(e.target.result);
+      setFlashcards(importedFlashcards);
+      localStorage.setItem("flashcards", JSON.stringify(importedFlashcards));
+    } catch (error) {
+      alert("Invalid JSON file");
+    }
+  };
+  reader.readAsText(file);
+};
+
   // Save flashcards to localStorage when updated
   useEffect(() => {
     localStorage.setItem("flashcards", JSON.stringify(flashcards));
@@ -176,6 +207,22 @@ export default function App() {
         <QuizMode flashcards={flashcards} />
       ) : (
         <>
+        <div className="flex justify-center gap-4 my-4">
+  {/* Import Button */}
+  <label className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer">
+    📥 Import Flashcards
+    <input type="file" className="hidden" onChange={importFlashcards} />
+  </label>
+
+  {/* Export Button */}
+  <button 
+    onClick={exportFlashcards} 
+    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+  >
+    📤 Export Flashcards
+  </button>
+</div>
+
           <FlashcardForm
             onSave={addOrUpdateFlashcard}
             editingFlashcard={editingFlashcard}
