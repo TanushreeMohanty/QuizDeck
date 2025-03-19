@@ -8,3 +8,5 @@ This is a Flashcard Quiz Website created using React.js
 ✅ Quiz Mode (Self-Test)  
 ✅ Timer for Each Question  
 ✅ Track Progress (Correct/Incorrect Answers, Score, Accuracy)  
+✅ Dark Mode Toggle  
+✅ Search & Filter Flashcards by Category/Difficulty  

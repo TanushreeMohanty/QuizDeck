@@ -3,11 +3,16 @@ import FlashcardForm from "./components/FlashcardForm";
 import FlashcardList from "./components/FlashcardList";
 import QuizMode from "./components/QuizMode";
 import logo from "./assets/logo.png";
+
 export default function App() {
   const [flashcards, setFlashcards] = useState([]);
   const [editingFlashcard, setEditingFlashcard] = useState(null);
   const [quizMode, setQuizMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+
+  // Dark Mode State (Stored in localStorage)
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
@@ -17,6 +22,7 @@ export default function App() {
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
 
+  // Add or Update Flashcard
   const addOrUpdateFlashcard = (newFlashcard) => {
     setFlashcards((prev) =>
       prev.some((fc) => fc.id === newFlashcard.id)
@@ -25,15 +31,26 @@ export default function App() {
     );
   };
 
+  // Delete Flashcard
   const deleteFlashcard = (id) => {
     setFlashcards(flashcards.filter((flashcard) => flashcard.id !== id));
   };
 
+  // Edit Flashcard
   const editFlashcard = (flashcard) => {
     setEditingFlashcard(flashcard);
   };
 
+  // Extract Unique Categories
   const categories = ["All", ...new Set(flashcards.map((fc) => fc.category))];
+
+  // Filtered Flashcards Based on Search, Category & Difficulty
+  const filteredFlashcards = flashcards.filter((fc) => {
+    const matchesSearch = fc.question.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || fc.category === selectedCategory;
+    const matchesDifficulty = selectedDifficulty === "All" || fc.difficulty === selectedDifficulty;
+    return matchesSearch && matchesCategory && matchesDifficulty;
+  });
 
   return (
     <div
@@ -43,11 +60,10 @@ export default function App() {
     >
       {/* Header Section */}
       <div className="flex justify-between items-center mb-5">
-      <h1 className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300">
-        <img src={logo} alt="QuizDeck Logo" className="w-12 h-12 animate-float" />
-        QuizDeck
-      </h1>
-
+        <h1 className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300">
+          <img src={logo} alt="QuizDeck Logo" className="w-12 h-12 animate-float" />
+          QuizDeck
+        </h1>
 
         {/* Dark Mode Toggle */}
         <button
@@ -70,9 +86,19 @@ export default function App() {
         </button>
       </div>
 
-      {/* Category Selection (Only in Study Mode) */}
+      {/* Filters Section (Only in Study Mode) */}
       {!quizMode && (
-        <div className="flex justify-center mb-6">
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="🔍 Search flashcards..."
+            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 bg-white dark:bg-gray-800 text-black dark:text-white"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+
+          {/* Category Filter */}
           <select
             className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
             bg-white dark:bg-gray-800 text-black dark:text-white"
@@ -84,6 +110,19 @@ export default function App() {
                 {category}
               </option>
             ))}
+          </select>
+
+          {/* Difficulty Filter */}
+          <select
+            className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
+            bg-white dark:bg-gray-800 text-black dark:text-white"
+            value={selectedDifficulty}
+            onChange={(e) => setSelectedDifficulty(e.target.value)}
+          >
+            <option value="All">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
           </select>
         </div>
       )}
@@ -98,15 +137,7 @@ export default function App() {
             editingFlashcard={editingFlashcard}
             setEditingFlashcard={setEditingFlashcard}
           />
-          <FlashcardList
-            flashcards={
-              selectedCategory === "All"
-                ? flashcards
-                : flashcards.filter((fc) => fc.category === selectedCategory)
-            }
-            onEdit={editFlashcard}
-            onDelete={deleteFlashcard}
-          />
+          <FlashcardList flashcards={filteredFlashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
         </>
       )}
     </div>
