@@ -1,21 +1,30 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import FlashcardForm from "./components/FlashcardForm";
 import FlashcardList from "./components/FlashcardList";
 import QuizMode from "./components/QuizMode";
 import logo from "./assets/logo.png";
 
 export default function App() {
-  const [flashcards, setFlashcards] = useState([]);
+  const [flashcards, setFlashcards] = useState(() => {
+    return JSON.parse(localStorage.getItem("flashcards")) || [];
+  });
+
   const [editingFlashcard, setEditingFlashcard] = useState(null);
   const [quizMode, setQuizMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
 
-  // Dark Mode State (Stored in localStorage)
+  // Dark Mode (Stored in localStorage)
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
+
+  // Save flashcards to localStorage when updated
+  useEffect(() => {
+    localStorage.setItem("flashcards", JSON.stringify(flashcards));
+  }, [flashcards]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -44,87 +53,108 @@ export default function App() {
   // Extract Unique Categories
   const categories = ["All", ...new Set(flashcards.map((fc) => fc.category))];
 
-  // Filtered Flashcards Based on Search, Category & Difficulty
+  // Filter Flashcards Based on Search, Category & Difficulty
   const filteredFlashcards = flashcards.filter((fc) => {
-    const matchesSearch = fc.question.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || fc.category === selectedCategory;
-    const matchesDifficulty = selectedDifficulty === "All" || fc.difficulty === selectedDifficulty;
-    return matchesSearch && matchesCategory && matchesDifficulty;
+    return (
+      fc.question.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (selectedCategory === "All" || fc.category === selectedCategory) &&
+      (selectedDifficulty === "All" || fc.difficulty === selectedDifficulty)
+    );
   });
 
   return (
-    <div
+    <motion.div
       className={`min-h-screen p-5 transition-all duration-300 ${
         darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
       {/* Header Section */}
       <div className="flex justify-between items-center mb-5">
-        <h1 className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300">
+        <motion.h1
+          className="flex items-center gap-3 text-4xl font-extrabold text-blue-700 dark:text-blue-400 transition-all duration-300"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <img src={logo} alt="QuizDeck Logo" className="w-12 h-12 animate-float" />
           QuizDeck
-        </h1>
+        </motion.h1>
 
         {/* Dark Mode Toggle */}
-        <button
+        <motion.button
           className="px-4 py-2 border rounded-lg transition-all duration-300 
           hover:bg-gray-200 dark:hover:bg-gray-800"
           onClick={() => setDarkMode(!darkMode)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-        </button>
+        </motion.button>
       </div>
 
       {/* Toggle Study & Quiz Mode */}
       <div className="flex justify-center mb-6">
-        <button
+        <motion.button
           className="px-5 py-2 font-semibold rounded-lg shadow-md transition-all duration-300
           bg-blue-600 text-white hover:bg-blue-700"
           onClick={() => setQuizMode(!quizMode)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           {quizMode ? "📚 Study Mode" : "📝 Quiz Mode"}
-        </button>
+        </motion.button>
       </div>
 
       {/* Filters Section (Only in Study Mode) */}
       {!quizMode && (
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
+        <motion.div
+          className="flex flex-wrap justify-center gap-4 mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {/* Search Input */}
-          <input
+          <motion.input
             type="text"
             placeholder="🔍 Search flashcards..."
             className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 bg-white dark:bg-gray-800 text-black dark:text-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            whileFocus={{ scale: 1.05 }}
           />
 
           {/* Category Filter */}
-          <select
+          <motion.select
             className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
             bg-white dark:bg-gray-800 text-black dark:text-white"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
+            whileHover={{ scale: 1.05 }}
           >
             {categories.map((category, idx) => (
               <option key={idx} value={category}>
                 {category}
               </option>
             ))}
-          </select>
+          </motion.select>
 
           {/* Difficulty Filter */}
-          <select
+          <motion.select
             className="px-4 py-2 border rounded-lg shadow-md transition-all duration-300 
             bg-white dark:bg-gray-800 text-black dark:text-white"
             value={selectedDifficulty}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
+            whileHover={{ scale: 1.05 }}
           >
             <option value="All">All Difficulties</option>
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
-          </select>
-        </div>
+          </motion.select>
+        </motion.div>
       )}
 
       {/* Conditional Rendering: Study Mode or Quiz Mode */}
@@ -137,9 +167,15 @@ export default function App() {
             editingFlashcard={editingFlashcard}
             setEditingFlashcard={setEditingFlashcard}
           />
-          <FlashcardList flashcards={filteredFlashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <FlashcardList flashcards={filteredFlashcards} onEdit={editFlashcard} onDelete={deleteFlashcard} />
+          </motion.div>
         </>
       )}
-    </div>
+    </motion.div>
   );
 }

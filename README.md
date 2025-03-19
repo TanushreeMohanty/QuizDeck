@@ -10,3 +10,4 @@ This is a Flashcard Quiz Website created using React.js
 ✅ Track Progress (Correct/Incorrect Answers, Score, Accuracy)  
 ✅ Dark Mode Toggle  
 ✅ Search & Filter Flashcards by Category/Difficulty  
+✅ Smooth Animations (Framer Motion)  
