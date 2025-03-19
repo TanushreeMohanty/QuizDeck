@@ -11,3 +11,4 @@ This is a Flashcard Quiz Website created using React.js
 ✅ Dark Mode Toggle  
 ✅ Search & Filter Flashcards by Category/Difficulty  
 ✅ Smooth Animations (Framer Motion)  
+✅ Hover Effects for Flashcards  
