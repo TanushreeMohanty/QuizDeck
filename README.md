@@ -12,5 +12,5 @@ This is a Flashcard Quiz Website created using React.js
 ✅ Search & Filter Flashcards by Category/Difficulty  
 ✅ Smooth Animations (Framer Motion)  
 ✅ Hover Effects for Flashcards  
-✅ Leaderboard & Daily Streaks  
+✅ Leaderboard 
 ✅ Import & Export Flashcards (JSON File)  

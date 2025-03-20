@@ -78,7 +78,7 @@ export default function QuizMode({ flashcards }) {
   return (
     <div className="flex flex-col items-center">
       {quizCompleted ? (
-        <div className="text-center" title="Congratulations! You have finished the quiz.">
+        <div className="text-center" >
           <h2 className="text-2xl font-bold text-green-600">🎉 Quiz Completed!</h2>
           <p className="text-lg">
             Your final score: <span className="font-bold">{score}</span>
@@ -88,17 +88,16 @@ export default function QuizMode({ flashcards }) {
         <div className="bg-white shadow-lg rounded-lg p-6 w-96 text-center relative">
           <h2 
             className="text-lg font-bold mb-4 text-black" 
-            title="Current flashcard question"
           >
             {flashcards[currentIndex].question}
           </h2>
 
           {showAnswer ? (
-            <p className="text-green-600 font-semibold" title="Correct answer">
+            <p className="text-green-600 font-semibold" >
               {flashcards[currentIndex].answer}
             </p>
           ) : (
-            <p className="text-gray-400 italic" title="Click the button to see the answer">
+            <p className="text-gray-400 italic" >
               Tap to reveal the answer
             </p>
           )}
@@ -106,13 +105,12 @@ export default function QuizMode({ flashcards }) {
           <button 
             className="btn btn-accent mt-4" 
             onClick={() => setShowAnswer(!showAnswer)}
-            title={showAnswer ? "Hide the answer" : "Show the answer"}
           >
             {showAnswer ? "Hide Answer" : "Show Answer"}
           </button>
 
           {/* Timer UI */}
-          <div className="mt-4" title="Time remaining for this question">
+          <div className="mt-4">
             <p className="text-sm text-gray-600">Time Left: {timeLeft}s</p>
             <progress className="progress progress-primary w-full" value={timeLeft} max="10"></progress>
           </div>
@@ -122,30 +120,28 @@ export default function QuizMode({ flashcards }) {
             <button 
               className="btn btn-success btn-dash" 
               onClick={() => handleAnswer(true)}
-              title="Mark answer as correct"
             >
               ✅ Correct
             </button>
             <button 
               className="btn btn-error btn-dash" 
               onClick={() => handleAnswer(false)}
-              title="Mark answer as incorrect"
             >
               ❌ Incorrect
             </button>
           </div>
 
           {/* Score & Progress */}
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full text-black" title="Quiz progress summary">
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg w-full text-black">
             <h3 className="font-bold text-lg text-secondary">📊 Progress</h3>
-            <p title="Your current quiz score">Score: <span className="font-semibold">{score}</span></p>
-            <p title="Number of correct answers">Correct: <span className="text-green-600">{correctCount}</span></p>
-            <p title="Number of incorrect answers">Incorrect: <span className="text-red-600">{incorrectCount}</span></p>
-            <p title="Accuracy percentage">Accuracy: <span className="text-purple-600">{accuracy}%</span></p>
+            <p >Score: <span className="font-semibold">{score}</span></p>
+            <p >Correct: <span className="text-green-600">{correctCount}</span></p>
+            <p >Incorrect: <span className="text-red-600">{incorrectCount}</span></p>
+            <p >Accuracy: <span className="text-purple-600">{accuracy}%</span></p>
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-500" title="No flashcards available to display">
+        <p className="text-center text-gray-500">
           No flashcards available!
         </p>
       )}

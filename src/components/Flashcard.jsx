@@ -42,7 +42,6 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
             e.stopPropagation();
             onEdit(flashcard);
           }}
-          title="Edit this flashcard"
         >
           ✏️ Edit
         </button>
@@ -54,7 +53,6 @@ export default function Flashcard({ flashcard, onEdit, onDelete }) {
             e.stopPropagation();
             onDelete(flashcard.id);
           }}
-          title="Delete this flashcard"
         >
           🗑️ Delete
         </button>
