@@ -21,19 +21,25 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
       <h2 className="text-xl font-semibold text-center text-pink-500">
         {editingFlashcard ? "Edit Flashcard" : "Add New Flashcard"}
       </h2>
+      
+      {/* Question Input */}
       <input
         type="text"
         placeholder="Enter question..."
         className="input input-bordered w-full my-2 text-white"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
+        title="Enter the question for the flashcard"
       />
+
+      {/* Answer Input */}
       <input
         type="text"
         placeholder="Enter answer..."
         className="input input-bordered w-full my-2 text-white"
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
+        title="Enter the answer for the flashcard"
       />
       
       {/* Category Selection */}
@@ -41,6 +47,7 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
         className="select select-bordered w-full my-2 text-white"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
+        title="Select a category for the flashcard"
       >
         <option value="General">General</option>
         <option value="Math">Math</option>
@@ -49,7 +56,12 @@ export default function FlashcardForm({ onSave, editingFlashcard, setEditingFlas
         <option value="Language">Language</option>
       </select>
 
-      <button type="submit" className="btn btn-success w-full">
+      {/* Submit Button */}
+      <button 
+        type="submit" 
+        className="btn btn-success w-full"
+        title={editingFlashcard ? "Update the existing flashcard" : "Add a new flashcard"}
+      >
         {editingFlashcard ? "Update" : "Add"}
       </button>
     </form>

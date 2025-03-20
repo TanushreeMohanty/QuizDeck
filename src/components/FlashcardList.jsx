@@ -24,6 +24,7 @@ export default function FlashcardList({ flashcards, onEdit, onDelete }) {
           bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
+          title="Select a category to filter flashcards"
         >
           <option value="All">All Categories</option>
           <option value="General">General</option>
@@ -42,6 +43,7 @@ export default function FlashcardList({ flashcards, onEdit, onDelete }) {
               key={flashcard.id}
               whileHover={{ scale: 1.05, boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)" }}
               transition={{ duration: 0.3 }}
+              title="Click a flashcard to flip and view the answer"
             >
               <Flashcard flashcard={flashcard} onEdit={onEdit} onDelete={onDelete} />
             </motion.div>
